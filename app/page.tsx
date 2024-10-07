@@ -1,14 +1,15 @@
 'use client';
 
 import Image from "next/image";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import cap1 from "./img/cap1.jpg";
 import cap2 from "./img/cap2.jpg";
 import cap3 from "./img/cap3.jpg";
 import cap4 from "./img/cap4.jpg";
 import cap5 from "./img/cap5.jpg";
 import cap6 from "./img/cap6.jpg";
-import Loader from "@/app/components/loader";
+import Loader from "@/app/components/Loader";
+
 
 export default function Home() {
     const [score, setScore] = useState(0);
@@ -29,24 +30,30 @@ export default function Home() {
             setCurrentImage(cap5);
         } else if (score < 60) {
             setCurrentImage(cap6);
+        } else {
+            setCurrentImage(cap6);
         }
     }
 
-    const tapHandler = (e: any) => {
+    const tapHandler = () => {
         setScore(a => a + 1);
         if (timeout === null) {
             timeout = setTimeout(() => {
                 localStorage.setItem("score", String(score));
                 timeout = null;
-            }, 1000);
+            }, 300);
         }
+    }
 
+    const setScoreHandler = (value:number) => {
+        setScore(value);
+        localStorage.setItem("score", String(score));
     }
 
     useEffect(() => {
-        setScore(score => Number(localStorage.getItem("score")) ?? 0);
+        setScore(Number(localStorage.getItem("score")) ?? 0);
         changeImageHandler(score);
-        setTimeout(()=>{
+        setTimeout(() => {
             setLoading(false);
         }, 4000);
     }, []);
@@ -77,7 +84,12 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="footer p-4">
-                        Footer
+                        <button type="button"
+                                onClick={() => setScoreHandler(0)}
+                                className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                            Reset
+                        </button>
+
                     </div>
                 </div>
             }

@@ -9,6 +9,7 @@ import cap4 from "./img/cap4.jpg";
 import cap5 from "./img/cap5.jpg";
 import cap6 from "./img/cap6.jpg";
 import Loader from "@/app/components/Loader";
+import {formatScore} from "@/app/utils";
 
 
 export default function Home() {
@@ -46,8 +47,8 @@ export default function Home() {
     }
 
     const setScoreHandler = (value:number) => {
-        setScore(value);
         localStorage.setItem("score", String(score));
+        setScore(value);
     }
 
     useEffect(() => {
@@ -70,8 +71,17 @@ export default function Home() {
                     className="flex flex-col items-center justify-around w-full min-h-screen bg-cover bg-[url('./img/back1.jpg')]">
                     <div className="header flex justify-between w-full items-center p-4">
                         <div className="logo">Logo</div>
-                        <div className="score font-bold caret-blue-500">{score}</div>
+
+                        <div className="flex items-center">
+                            <svg className="w-4 h-4 text-yellow-300 me-1" aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                                <path
+                                    d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                            </svg>
+                            <p className="text-xl font-bold text-gray-900 dark:text-white">{formatScore(score)}</p>
+                        </div>
                     </div>
+
                     <div className="tapper flex justify-center items-center w-full" onClick={tapHandler}>
                         <div
                             className="tap-circle bg-clip-text w-3/5 rounded-full overflow-hidden p-2 bg-cyan-300 object-cover object-center">
@@ -86,9 +96,28 @@ export default function Home() {
                     <div className="footer p-4">
                         <button type="button"
                                 onClick={() => setScoreHandler(0)}
-                                className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                                className="me-1 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                             Reset
                         </button>
+
+                        <button type="button"
+                                onClick={() => setScoreHandler(2000)}
+                                className="me-1 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                            2M
+                        </button>
+
+                        <button type="button"
+                                onClick={() => setScoreHandler(2000000)}
+                                className="me-1 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                            2M
+                        </button>
+
+                        <button type="button"
+                                onClick={() => setScoreHandler(2000000000)}
+                                className="me-1 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                            2B
+                        </button>
+
 
                     </div>
                 </div>

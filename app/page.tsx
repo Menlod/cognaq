@@ -20,6 +20,7 @@ interface UserData {
     username?: string;
     language_code: string;
     is_premium: boolean;
+    photo_url?: string;
 }
 
 const supabase = createClient("https://myamznjsptdlsgwspbpv.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YW16bmpzcHRkbHNnd3NwYnB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjgzMjE4MjksImV4cCI6MjA0Mzg5NzgyOX0.LS0EOIHIi4tgoxcfE5Xwk9olFiPqTliUA19ZruXjww0");
@@ -119,6 +120,7 @@ export default function Home() {
 
     useEffect(() => {
         if (WebApp.initDataUnsafe.user) {
+            console.log('WebApp.initDataUnsafe.user', WebApp.initDataUnsafe.user);
             setUserData(WebApp.initDataUnsafe.user as UserData);
             const $res = getUserById(WebApp.initDataUnsafe.user.id as number);
             console.log($res);
@@ -168,6 +170,7 @@ export default function Home() {
                                 <li><strong>UserName: </strong>{userData.username}</li>
                                 <li><strong>LangCode: </strong>{userData.language_code}</li>
                                 <li><strong>Is_premium: </strong>{userData.is_premium}</li>
+                                <li><strong>Photo_url: </strong>{userData.photo_url}</li>
                             </ul>
                         </div>
                     }

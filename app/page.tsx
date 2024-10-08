@@ -10,12 +10,23 @@ import cap5 from "./img/cap5.jpg";
 import cap6 from "./img/cap6.jpg";
 import Loader from "@/app/components/Loader";
 import {formatScore} from "@/app/utils";
+import WebApp from "@twa-dev/sdk";
 
+interface UserData {
+    id: number;
+    first_name: string;
+    last_name?: string;
+    username?: string;
+    language_code: string;
+    is_premium: boolean;
+}
 
 export default function Home() {
-    const [score, setScore] = useState(0);
-    const [loading, setLoading] = useState(true);
+    const [score, setScore] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
     const [currentImage, setCurrentImage] = useState(cap1);
+    const [userData, setUserData] = useState<UserData | null>(null);
+    const [debugState, setDebugState] = useState<boolean>(true);
     let timeout: any = null;
 
     const changeImageHandler = (score: number) => {
@@ -46,9 +57,13 @@ export default function Home() {
         }
     }
 
-    const setScoreHandler = (value:number) => {
+    const setScoreHandler = (value: number) => {
         localStorage.setItem("score", String(score));
         setScore(value);
+    }
+
+    const setDebugHandler = () => {
+        setDebugState(val => !val);
     }
 
     useEffect(() => {
@@ -56,12 +71,19 @@ export default function Home() {
         changeImageHandler(score);
         setTimeout(() => {
             setLoading(false);
-        }, 4000);
+            WebApp.expand();
+        }, 1000);
     }, []);
 
     useEffect(() => {
         changeImageHandler(score);
     }, [score]);
+
+    useEffect(() => {
+        if (WebApp.initDataUnsafe.user) {
+            setUserData(WebApp.initDataUnsafe.user as UserData)
+        }
+    }, [])
 
     return (
         <>
@@ -84,26 +106,44 @@ export default function Home() {
 
                     <div className="tapper flex justify-center items-center w-full" onClick={tapHandler}>
                         <div
-                            className="tap-circle bg-clip-text w-3/5 rounded-full overflow-hidden p-2 bg-cyan-300 object-cover object-center">
+                            className="tap-circle bg-clip-text w-1/5 rounded-full overflow-hidden p-2 bg-cyan-300 object-cover object-center">
                             <Image src={currentImage}
                                    alt="22132131"
                                    className="w-full rounded-full"
-                                   width={300}
-                                   height={300}
+                                   width={500}
+                                   height={500}
                             />
                         </div>
                     </div>
+                    {userData && debugState &&
+                        <div className="debug">
+                            <ul>
+                                <li><strong>ID: </strong>{userData.id}</li>
+                                <li><strong>First Name: </strong>{userData.first_name}</li>
+                                <li><strong>Last Name: </strong>{userData.last_name}</li>
+                                <li><strong>UserName: </strong>{userData.username}</li>
+                                <li><strong>LangCode: </strong>{userData.language_code}</li>
+                                <li><strong>Is_premium: </strong>{userData.is_premium}</li>
+                            </ul>
+                        </div>
+                    }
                     <div className="footer p-4">
                         <button type="button"
                                 onClick={() => setScoreHandler(0)}
                                 className="me-1 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
-                            Reset
+                            R
+                        </button>
+
+                        <button type="button"
+                                onClick={() => setDebugHandler()}
+                                className="me-1 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                            D
                         </button>
 
                         <button type="button"
                                 onClick={() => setScoreHandler(2000)}
                                 className="me-1 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
-                            2M
+                            2K
                         </button>
 
                         <button type="button"

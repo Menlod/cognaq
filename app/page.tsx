@@ -11,6 +11,7 @@ import cap6 from "./img/cap6.jpg";
 import Loader from "@/app/components/Loader";
 import {formatScore} from "@/app/utils";
 import WebApp from "@twa-dev/sdk";
+import {createClient} from "@supabase/supabase-js";
 
 interface UserData {
     id: number;
@@ -21,14 +22,38 @@ interface UserData {
     is_premium: boolean;
 }
 
+const supabase = createClient("https://myamznjsptdlsgwspbpv.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YW16bmpzcHRkbHNnd3NwYnB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjgzMjE4MjksImV4cCI6MjA0Mzg5NzgyOX0.LS0EOIHIi4tgoxcfE5Xwk9olFiPqTliUA19ZruXjww0");
+
 export default function Home() {
     const [score, setScore] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [currentImage, setCurrentImage] = useState(cap1);
     const [userData, setUserData] = useState<UserData | null>(null);
     const [debugState, setDebugState] = useState<boolean>(true);
+    const [status, setStatus] = useState<boolean>(false);
     //let timeout: any = null;
     let autoTimeout: any = null;
+
+    async function getUsers() {
+        const { data } = await supabase.from("users").select();
+        if(!!data){
+            data.forEach((user) => {
+                console.log(user.id);
+            })
+            console.log(data);
+        }
+
+    }
+
+    async function getUserById(id: number) {
+        const { data } = await supabase.from("users").select().eq("tg_id", id);
+        if(!!data){
+            console.log('TG ID: ', data[0].tg_id);
+            setStatus(true);
+            //data.forEach((user) => {console.log(user.tg_id)})
+        }
+        return data;
+    }
 
     const TAP_BOOSTER: number = 1;
 
@@ -73,7 +98,6 @@ export default function Home() {
         autoTimeout = setTimeout(() => {
             tapHandler();
             autoTapHandler();
-            console.log('TAP')
         }, 1000);
     }
 
@@ -86,7 +110,6 @@ export default function Home() {
             WebApp.disableVerticalSwipes();
             clearTimeout(autoTimeout);
             autoTapHandler();
-            console.log('READY =>>>>>>>>>>>>>>>>>>')
         }, 1000);
     }, []);
 
@@ -96,8 +119,14 @@ export default function Home() {
 
     useEffect(() => {
         if (WebApp.initDataUnsafe.user) {
-            setUserData(WebApp.initDataUnsafe.user as UserData)
+            setUserData(WebApp.initDataUnsafe.user as UserData);
+            const $res = getUserById(WebApp.initDataUnsafe.user.id as number);
+            console.log($res);
+        }else{
+            const $res = getUserById(270845102);
+            console.log($res);
         }
+        //
     }, [])
 
     return (
@@ -108,7 +137,7 @@ export default function Home() {
                     className="flex flex-col items-center justify-around w-full min-h-screen bg-cover bg-[url('./img/back1.jpg')]">
                     <div className="header flex justify-between w-full items-center p-4">
                         <div className="logo">Version 0.0.1</div>
-
+                        <div className="status">{status ? 'Prime' : 'Noob' }</div>
                         <div className="flex items-center">
                             <svg className="w-4 h-4 text-yellow-300 me-1" aria-hidden="true"
                                  xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">

@@ -104,7 +104,7 @@ export default function Home() {
                         </div>
                     </div>
 
-                    <div className="tapper flex justify-center items-center w-full" onClick={tapHandler}>
+                    <div className="tapper flex justify-center items-center w-full" onTouchEnd={tapHandler}>
                         <div
                             className="tap-circle bg-clip-text w-1/5 rounded-full overflow-hidden p-2 bg-cyan-300 object-cover object-center">
                             <Image src={currentImage}

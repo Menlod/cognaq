@@ -27,7 +27,10 @@ export default function Home() {
     const [currentImage, setCurrentImage] = useState(cap1);
     const [userData, setUserData] = useState<UserData | null>(null);
     const [debugState, setDebugState] = useState<boolean>(true);
-    let timeout: any = null;
+    //let timeout: any = null;
+    let autoTimeout: any = null;
+
+    const TAP_BOOSTER: number = 1;
 
     const changeImageHandler = (score: number) => {
         if (score < 10) {
@@ -48,13 +51,13 @@ export default function Home() {
     }
 
     const tapHandler = () => {
-        setScore(a => a + 1);
-        if (timeout === null) {
-            timeout = setTimeout(() => {
-                localStorage.setItem("score", String(score));
-                timeout = null;
-            }, 300);
-        }
+        setScore(val => val + TAP_BOOSTER);
+        //if (timeout === null) {
+        // timeout = setTimeout(() => {
+        localStorage.setItem("score", String(score));
+        //timeout = null;
+        //  }, 300);
+        //}
     }
 
     const setScoreHandler = (value: number) => {
@@ -66,12 +69,24 @@ export default function Home() {
         setDebugState(val => !val);
     }
 
+    const autoTapHandler = () => {
+        autoTimeout = setTimeout(() => {
+            tapHandler();
+            autoTapHandler();
+            console.log('TAP')
+        }, 1000);
+    }
+
     useEffect(() => {
         setScore(Number(localStorage.getItem("score")) ?? 0);
         changeImageHandler(score);
         setTimeout(() => {
             setLoading(false);
             WebApp.expand();
+            WebApp.disableVerticalSwipes();
+            clearTimeout(autoTimeout);
+            autoTapHandler();
+            console.log('READY =>>>>>>>>>>>>>>>>>>')
         }, 1000);
     }, []);
 
